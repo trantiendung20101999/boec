@@ -1,0 +1,155 @@
+
+{% load static %}
+
+
+<div id="preloder">
+        <div class="loader"></div>
+    </div>
+<header class="header-section">
+        <div class="header-top">
+            <div class="container">
+                <div class="ht-left">
+                    <div class="mail-service">
+                        <i class=" fa fa-envelope"></i>
+                        trantiendung101999@gmail.com
+                    </div>
+                    <div class="phone-service">
+                        <i class=" fa fa-phone"></i>
+                        +84 868 381 642
+                    </div>
+                </div>
+                <div class="ht-right">
+                    {% if user.id is null  %}
+                    <a href="{% url 'core:login' %}" class="login-panel"><i class="fa fa-user"></i>Đăng nhập </a>
+                    {% else %}
+                    <a href="{% url 'core:logout' %}" class="login-panel"><i class="fa fa-user"></i>{{ user.username }} Đăng xuất </a>
+                    {% endif %}
+                    <div class="top-social">
+                        <a href="https://www.facebook.com/dung.trantien.94214508"><i class="ti-facebook"></i></a>
+                        <a href="https://www.instagram.com/ttdung2099/"><i class="fa fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="inner-header">
+                <div class="row">
+                    <div class="col-lg-2 col-md-2">
+                        <div class="logo">
+                            <a href="./index.html">
+                                <img src="{% static 'homepage/img/choichoi_logo2.png' %}" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 col-md-7">
+                        <div class="advanced-search">
+                            <button type="button" class="category-btn">Trong Shop</button>
+                            <div class="input-group">
+                                {% if user.id is not null %}
+                                <form action="{% url 'product:searchproduct' user.id 0 %}" method="POST">
+                                    {% csrf_token %}
+                                <input type="text" placeholder="Sản phẩm bạn muốn tìm ?" name="key">
+                                <button type="button submit" ><i class="ti-search"></i></button>
+                                </form>
+                                {% else %}
+                                <form action="{% url 'product:searchproductno' 0 %}" method="POST">
+                                    {% csrf_token %}
+                                <input type="text" placeholder="Sản phẩm bạn muốn tìm ?" name="key">
+                                <button type="button submit" ><i class="ti-search"></i></button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-right col-md-3">
+                        <ul class="nav-right">
+
+                            <li class="cart-icon">
+                                <a href="#">
+                                    <i class="icon_bag_alt"></i>
+                                    {% if user.id is not null %}
+                                    <span>{{cart_count}}</span>
+                                    {% else %}
+                                    <span>0</span>
+                                    {% endif %}
+                                </a>
+
+                                <div class="cart-hover">
+                                    <div class="select-items">
+                                        <table>
+                                            <tbody>
+                                            {% for item3 in listcart %}
+                                                <tr>
+                                                    <td class="si-pic"><img src="img/select-product-1.jpg" alt=""></td>
+                                                    <td class="si-text">
+                                                        <div class="product-selected">
+                                                            <p>{{item3.item.sale_price}} x {{item3.quantity}}</p>
+                                                            <h6>{{ item3.item.title }}</h6>
+                                                        </div>
+                                                    </td>
+                                                    <td class="si-close">
+                                                        {% if start is null %}
+                                                        <a href="{% url 'cart:removefromcart' item3.id user.id %}"><i class="ti-close"></i></a>
+                                                        {% else %}
+                                                        <a href="{% url 'product:removefromcart' item3.id user.id start%}"><i class="ti-close"></i></a>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                           {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="select-total">
+                                        <span>total:</span>
+                                        <h5> {{total_money}} </h5>
+                                    </div>
+                                    <div class="select-button">
+                                        {% if user.id is not null %}
+                                        <a href="{% url 'cart:showcart' user.id %}" class="primary-btn view-card">Giỏ hàng</a>
+                                        <a href="{% url 'order:showcheckout' user.id %}" class="primary-btn checkout-btn">Thanh toán </a>
+
+                                        {% else %}
+                                        <a href=" # " class="primary-btn view-card">Giỏ hàng </a>
+                                        <a href="#" class="primary-btn checkout-btn">Thanh toán </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="cart-price">Giỏ hàng</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav-item">
+            <div class="container">
+                <div class="nav-depart">
+                    <div class="depart-btn">
+                        <i class="ti-menu"></i>
+                        <span>Sản phẩm </span>
+                        <ul class="depart-hover">
+                            <li ><a href="#">Quần áo </a></li>
+                            <li><a href="#">Thiết bị điện tử </a></li>
+                            <li><a href="#">Sách</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <nav class="nav-menu mobile-menu">
+                    <ul>
+                        {% if user.id is not null %}
+                        <li class=""><a href="{% url 'core:index2' user.id  %}">Trang chủ </a></li>
+                        {% else %}
+                        <li class=""><a href="{% url 'core:index'%}">Trang chủ </a></li>
+                        {% endif %}
+                        {% if user.id is not null %}
+                        <li><a href="{% url 'product:shop' user.id 0 %}">Cửa hàng </a></li>
+                        {% else %}
+                        <li><a href="{% url 'product:shopno' 0 %}">Cửa hàng </a></li>
+                        {% endif %}
+
+                    </ul>
+                </nav>
+                <div id="mobile-menu-wrap"></div>
+            </div>
+        </div>
+    </header>
